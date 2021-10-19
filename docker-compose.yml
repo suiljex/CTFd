@@ -11,7 +11,7 @@ services:
       - UPLOAD_FOLDER=/var/uploads
       - DATABASE_URL=mysql+pymysql://ctfd:ctfd@db/ctfd
       - REDIS_URL=redis://cache:6379
-      - WORKERS=1
+      - WORKERS=4
       - LOG_FOLDER=/var/log/CTFd
       - ACCESS_LOG=-
       - ERROR_LOG=-
@@ -26,13 +26,29 @@ services:
         default:
         internal:
 
+  # nginx:
+  #   image: nginx:1.17
+  #   restart: always
+  #   volumes:
+  #     - ./conf/nginx/http.conf:/etc/nginx/nginx.conf
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - ctfd
+
   nginx:
-    image: nginx:1.17
+    image: jonasal/nginx-certbot:latest
     restart: always
-    volumes:
-      - ./conf/nginx/http.conf:/etc/nginx/nginx.conf
+    environment:
+      - CERTBOT_EMAIL=your@email.org
+    env_file:
+      - ./conf/nginx-certbot.env
     ports:
       - 80:80
+      - 443:443
+    volumes:
+      - .data/nginx_secrets:/etc/letsencrypt
+      - ./conf/nginx/https.conf:/etc/nginx/user_conf.d/https.conf
     depends_on:
       - ctfd
 
