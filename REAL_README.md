@@ -19,7 +19,7 @@ nginx:
 docker run -it -p 80:80 -p 443:443 --env CERTBOT_EMAIL=your@email.org --env STAGING=1 --env DEBUG=1 -v /<absolute_path_to_CTFd_folder>/conf/nginx/https.conf:/etc/nginx/user_conf.d/https.conf jonasal/nginx-certbot:latest
 ```
 
-## Создайте `.ctfd_secret_key`
+## Создайте `.ctfd_secret_key` в корне CTFd
 
 ```
 head -c 64 /dev/urandom > .ctfd_secret_key
@@ -28,5 +28,5 @@ head -c 64 /dev/urandom > .ctfd_secret_key
 ## Запустите
 
 ```
-docker-compose up -d --build
+docker-compose up --detach --build
 ```
